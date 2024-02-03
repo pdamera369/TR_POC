@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Website Review Chatbot</title>
+</head>
+<body>
+    <h2>Website Review Chatbot</h2>
+    <form id="reviewForm">
+        <input type="text" id="websiteURL" placeholder="Enter website URL" required>
+        <button type="submit">Review Website</button>
+    </form>
+    <div id="reviewSummary"></div>
+
+    <script>
+        document.getElementById('reviewForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const urlInput = document.getElementById('websiteURL');
+            const reviewSummaryDiv = document.getElementById('reviewSummary');
+            fetch('/api/review', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ url: urlInput.value }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                reviewSummaryDiv.innerText = data.reviewSummary || 'Failed to get a review summary.';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                reviewSummaryDiv.innerText = 'An error occurred while fetching the review.';
+            });
+        });
+    </script>
+</body>
+</html>
